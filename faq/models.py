@@ -2,13 +2,9 @@ from django.db import models
 from django.core.cache import cache
 from googletrans import Translator
 from ckeditor.fields import RichTextField
-
-
 class FAQ(models.Model):
     question = models.TextField()
     answer = RichTextField()
-
-    # Fields for various language translations
     question_hi = models.TextField(blank=True, null=True)  # Hindi
     question_bn = models.TextField(blank=True, null=True)  # Bengali
     question_ta = models.TextField(blank=True, null=True)  # Tamil
@@ -20,29 +16,25 @@ class FAQ(models.Model):
     question_pa = models.TextField(blank=True, null=True)  # Punjabi
     question_ur = models.TextField(blank=True, null=True)  # Urdu
     question_or = models.TextField(blank=True, null=True)  # Odia
-
     def translate_question(self, lang):
         """Retrieve cached translation or generate a new one."""
         cache_key = f'faq_{self.id}_{lang}'
         translation = cache.get(cache_key)
-
         if not translation:
             try:
                 # Using Google Translator for language translation
                 translator = Translator()
                 translated_text = translator.translate(self.question, dest=lang).text
-                cache.set(cache_key, translated_text, timeout=86400)  # Cache for 1 day
+                cache.set(cache_key, translated_text, timeout=86400)
                 translation = translated_text
             except Exception as e:
                 print(f"Error while translating: {e}")
                 return self.question  # Fallback to the original question
         return translation
-
     def get_question_in_language(self, lang):
         """Return translated question based on language preference."""
         # First, check for the cached translation
         translation = self.translate_question(lang)
-        # If translation is not available in cache, fallback to default question or language-specific fields
         if not translation:
             if lang == 'hi' and self.question_hi:
                 return self.question_hi
@@ -68,13 +60,10 @@ class FAQ(models.Model):
                 return self.question_or
             else:
                 return self.question  # Fallback to default question
-
         return translation
-
     def save(self, *args, **kwargs):
         """Automatically generate translations when saving."""
         translator = Translator()
-
         # Generate translations only if they are empty
         if not self.question_hi:
             try:
@@ -131,8 +120,6 @@ class FAQ(models.Model):
                 self.question_or = translator.translate(self.question, dest='or').text
             except Exception as e:
                 print(f"Error while translating to Odia: {e}")
-
         super().save(*args, **kwargs)
-
     def __str__(self):
         return self.question
