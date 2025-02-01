@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import ssl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -108,18 +109,19 @@ CKEDITOR_CONFIGS = {
 }
 
 # Redis caching configuration
-redis_url = os.getenv('REDIS_URL')
-
+# Use SSL certificate verification disable if needed
+redis_url = os.getenv('REDIS_URL', 'redis://localhost:6380/1')  # Fallback for local setup
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': redis_url,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'SSL_CERT_REQS': None,  # Disable certificate verification
+            'SSL_CERTFILE': None,  # Disable certificate verification for development
         }
     }
 }
+
 # Session configuration to use Redis
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
