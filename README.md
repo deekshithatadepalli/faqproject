@@ -1,12 +1,14 @@
 # FAQ Management System
 A multilingual FAQ management system built using Django, with features including WYSIWYG editor support, REST API, translation caching, and Docker deployment.
 
-## Table of Contents:
-1. Installation
-2. API Usage
-3. Contributing
-4. Version Control
-5. Deployment & Docker Support
+## Table of Contents
+1. [Installation](#installation)
+2. [API Usage](#api-usage)
+3. [Contributing](#contributing)
+4. [Version Control](#version-control)
+5. [Deployment & Docker Support](#deployment--docker-support)
+
+---
 
 ## Installation
 Follow these steps to set up the project locally:
@@ -16,130 +18,150 @@ Follow these steps to set up the project locally:
 - pip (Python package installer)
 - Redis (for caching support, optional if not using Redis, but included in Docker setup)
 
-### Steps:
+### Steps
 1. Clone the repository:
    ```bash
    git clone https://github.com/deekshithatadepalli/faqproject.git
+   ```
 
-Navigate to the project directory:
-cd faqproject
+2. Navigate to the project directory:
+   ```bash
+   cd faqproject
+   ```
 
-Set up a virtual environment:
-python -m venv venv
+3. Set up a virtual environment:
+   ```bash
+   python -m venv venv
+   ```
 
-Activate the virtual environment:
-For Windows:
-venv\Scripts\activate
+4. Activate the virtual environment:
+   - **For Windows:**
+     ```bash
+     venv\Scripts\activate
+     ```
+   - **For Mac/Linux:**
+     ```bash
+     source venv/bin/activate
+     ```
 
-For Mac/Linux:
-source venv/bin/activate
+5. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Install the required dependencies:
-pip install -r requirements.txt
+6. Apply database migrations:
+   ```bash
+   python manage.py migrate
+   ```
 
-Apply database migrations:
-python manage.py migrate
+7. Create a superuser to access the admin panel:
+   ```bash
+   python manage.py createsuperuser
+   ```
 
-Create a superuser to access the admin panel:
-python manage.py createsuperuser
+8. Run the development server:
+   ```bash
+   python manage.py runserver
+   ```
+   The application should now be accessible at [http://localhost:8000](http://localhost:8000)
 
+---
 
-Run the development server:
-python manage.py runserver
-application should now be accessible at http://localhost:8000
+## API Usage
+The API provides multilingual support for FAQs. Use the `lang` query parameter to retrieve FAQ questions in the desired language.
 
+### Example Endpoints
+- **Get FAQs in English (default):**
+  ```bash
+  curl http://localhost:8000/api/faqs/
+  ```
+- **Get FAQs in Hindi:**
+  ```bash
+  curl http://localhost:8000/api/faqs/?lang=hi
+  ```
+- **Get FAQs in Bengali:**
+  ```bash
+  curl http://localhost:8000/api/faqs/?lang=bn
+  ```
 
-API Usage
-The API provides multilingual support for FAQs. Use the lang query parameter to retrieve the FAQ questions in the desired language.
+---
 
-Example Endpoints:
-Get FAQs in English (default):
-curl http://localhost:8000/api/faqs/
-
-Get FAQs in Hindi:
-curl http://localhost:8000/api/faqs/?lang=hi
-
-
-Get FAQs in Bengali:
-curl http://localhost:8000/api/faqs/?lang=bn
-
-Contributing
+## Contributing
 We welcome contributions to improve the project! Here's how you can contribute:
 
-Fork the repository:
-Create a personal copy of the project by forking it on GitHub.
+### Steps
+1. **Fork the repository:**
+   - Create a personal copy of the project by forking it on GitHub.
 
-Create a new branch for your changes:
-It is always good practice to work on a new branch rather than directly on main.
-Contributing
-We welcome contributions to improve the project! Here's how you can contribute:
+2. **Create a new branch:**
+   - It is always good practice to work on a new branch rather than directly on `main`.
+   ```bash
+   git checkout -b feature-branch
+   ```
 
-Fork the repository:
-Create a personal copy of the project by forking it on GitHub.
+3. **Make changes and commit:**
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   ```
 
-Create a new branch for your changes:
-It is always good practice to work on a new branch rather than directly on main.
-Create a Pull Request:
-After pushing your branch to your fork, open a pull request to the main repository.
+4. **Push to your fork and create a pull request:**
+   ```bash
+   git push origin feature-branch
+   ```
+   - Open a pull request to the main repository.
 
+---
 
-Version Control
-This project uses Git for version control. To make collaboration easier, we follow conventional commits to ensure clean commit history. Here's a quick guide:
+## Version Control
+This project uses Git for version control. To make collaboration easier, we follow conventional commits to ensure a clean commit history.
 
-feat: Adding a new feature.
-Example: feat: Add multilingual FAQ model support.
+### Commit Message Guidelines
+- `feat:` Adding a new feature.
+  - Example: `feat: Add multilingual FAQ model support`
+- `fix:` Fixing a bug.
+  - Example: `fix: Corrected translation caching issue`
+- `docs:` Updating documentation.
+  - Example: `docs: Update README with API usage examples`
 
-fix: Fixing a bug.
-Example: fix: Corrected translation caching issue.
+### Git Workflow
+- **Commit Changes Atomically:** Each commit should have a single purpose.
+- **Write Descriptive Commit Messages:** Follow the `type: description` format.
+- **Push and Create Pull Requests:** Once your changes are committed, push them and create a PR.
 
-docs: Updating documentation.
-Example: docs: Update README with API usage examples.
+---
 
-
-Git Workflow:
-Commit Changes Atomically:
-Each commit should have a single purpose, whether adding a new feature or fixing a bug.
-
-Write Descriptive Commit Messages:
-The commit message should describe what was done and why, using the format type: description.
-
-Push and Create Pull Requests:
-Once your changes are committed, push them to your branch and create a pull request to the main branch.
-
-Deployment & Docker Support
 ## Deployment & Docker Support
 
 ### Docker Setup
-To run the application in a Docker container, follow the steps below. Docker allows you to containerize the application and run it consistently across different environments.
+To run the application in a Docker container, follow these steps.
 
-1. **Create a Dockerfile**  
-   In the root directory of your project, create a `Dockerfile` with the following content:
+#### 1. Create a `Dockerfile`
+```Dockerfile
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-   ```Dockerfile
-   # Use an official Python runtime as a parent image
-   FROM python:3.9-slim
+# Set the working directory in the container
+WORKDIR /app
 
-   # Set the working directory in the container
-   WORKDIR /app
+# Copy the current directory contents into the container
+COPY . /app/
 
-   # Copy the current directory contents into the container at /app
-   COPY . /app/
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-   # Install dependencies
-   RUN pip install --no-cache-dir -r requirements.txt
+# Expose port 8000 for the Django server
+EXPOSE 8000
 
-   # Expose port 8000 for the Django server
-   EXPOSE 8000
+# Set environment variables for Django
+ENV PYTHONUNBUFFERED 1
 
-   # Set environment variables for Django
-   ENV PYTHONUNBUFFERED 1
+# Run migrations and start the server
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+```
 
-   # Run migrations and start the server
-   CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
-
-Create a docker-compose.yml File
-In the root directory, create a docker-compose.yml file to define the services and link your database with the application.
-
+#### 2. Create a `docker-compose.yml` File
+```yaml
 version: '3'
 
 services:
@@ -166,69 +188,55 @@ services:
 
 networks:
   backend:
+```
 
-Build and Run with Docker
-To build and run your application inside Docker containers:
-
-Open a terminal and navigate to your project directory.
-
-Run the following command to build the Docker containers:
+#### 3. Build and Run with Docker
+```bash
 docker-compose build
-
-
-Once the build completes, start the containers with:
 docker-compose up
+```
+Access the application at [http://localhost:8000](http://localhost:8000).
 
-Access the Application
-After starting the containers, you can access your application at http://localhost:8000.
+---
 
-Deployment on Heroku
-To deploy the application to Heroku, follow these steps:
+## Deployment on Heroku
 
-Install Heroku CLI
-If you don’t have the Heroku CLI installed, download and install it from Heroku's website.
+### Steps
+1. **Install Heroku CLI**: [Download Here](https://devcenter.heroku.com/articles/heroku-cli)
+2. **Login to Heroku:**
+   ```bash
+   heroku login
+   ```
+3. **Create a new Heroku app:**
+   ```bash
+   heroku create faqproject-app
+   ```
+4. **(Optional) Add Heroku PostgreSQL:**
+   ```bash
+   heroku addons:create heroku-postgresql:hobby-dev
+   ```
+5. **Deploy the application:**
+   ```bash
+   git push heroku main
+   ```
+6. **Open the app:**
+   ```bash
+   heroku open
+   ```
 
-Create a Heroku App
+---
 
-Log in to your Heroku account by running:
-heroku login
-Create a new Heroku app:
-heroku create faqproject-app
-Add Heroku Postgres (Optional)
-If you're using PostgreSQL, you can add the Heroku Postgres database:
-heroku addons:create heroku-postgresql:hobby-dev
+## Deployment on AWS
 
+### Steps
+1. **Set Up an EC2 Instance**
+   - Launch an EC2 instance with a Linux distribution.
+   - SSH into the instance and install Docker.
+2. **Push Docker Container to AWS ECR**
+   - Build and push the Docker image to Amazon ECR.
+   - Follow [AWS ECR documentation](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html).
+3. **Run the Application on EC2**
+   - SSH into EC2, pull the Docker image, and run the container.
 
-Deploy the Application to Heroku
-
-Push the code to Heroku:
-bash
-Copy
-Edit
-
-git push heroku main
-
-
-Access the App on Heroku
-After the deployment is successful, you can access your application using the Heroku URL:
-heroku open
-
-
-Deployment on AWS 
-For deploying the application on AWS, you can use services like Elastic Beanstalk or EC2.
-
-Set Up an EC2 Instance
-
-Launch an EC2 instance with a suitable Linux distribution.
-SSH into the instance and install Docker.
-Push Your Docker Container to AWS
-
-Build and push your Docker image to Amazon ECR (Elastic Container Registry).
-Follow the AWS ECR documentation to push your Docker image to ECR.
-Run the Application on EC2
-
-SSH into your EC2 instance and pull the Docker image.
-Run the container on EC2 using Docker.
-
-
+---
 
