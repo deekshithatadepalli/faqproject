@@ -1,12 +1,13 @@
 import json
 import redis
+import os
 from django.http import JsonResponse
-
 from .models import FAQ
 from .serializers import FAQSerializer  # Import the serializer
 
-# Connect to Redis
-redis_client = redis.StrictRedis(host='127.0.0.1', port=6379, db=1, decode_responses=True)
+# Connect to Redis (for Heroku)
+redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+redis_client = redis.from_url(redis_url)
 
 def faq_list(request):
     """ Fetch FAQs with caching & translation support """
