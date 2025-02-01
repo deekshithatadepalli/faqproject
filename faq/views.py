@@ -6,8 +6,8 @@ from .models import FAQ
 from .serializers import FAQSerializer
 from urllib.parse import urlparse
 
-# Parse Redis URL to handle SSL configuration
-redis_url = os.getenv('REDIS_URL', 'redis://localhost:6380/1')
+# Parse Redis URL to handle SSL configuration - try REDISCLOUD_URL first
+redis_url = os.getenv('REDISCLOUD_URL', os.getenv('REDIS_URL', 'redis://localhost:6380/1'))
 url = urlparse(redis_url)
 
 # Configure Redis client

@@ -111,7 +111,7 @@ CKEDITOR_CONFIGS = {
 
 # Redis caching configuration
 # Use SSL certificate verification disable if needed
-redis_url = os.getenv('REDIS_URL', 'redis://localhost:6380/1')
+redis_url = os.getenv('REDISCLOUD_URL', os.getenv('REDIS_URL', 'redis://localhost:6380/1'))
 url = urlparse(redis_url)
 
 # Configure cache settings based on URL scheme
@@ -144,6 +144,7 @@ CACHES = {
         'OPTIONS': redis_options
     }
 }
+
 # Session configuration to use Redis
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
