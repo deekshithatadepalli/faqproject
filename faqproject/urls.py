@@ -17,8 +17,13 @@ Including another URLconf
 # faqproject/urls.py
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("<h1>Welcome to the FAQ Project!</h1>")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('faq.urls')),  # Include the faq app URLs here
+    path('api/', include('faq.urls')),  # Ensure 'faq.urls' exists and is correctly configured
+    path('', home),  # Add this line to handle the root URL
 ]
